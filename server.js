@@ -7,7 +7,7 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = 'gemini-3.8-flash';
+const MODEL = 'gemini-3.6-flash';
 
 if (!API_KEY) {
   console.error('\n❌ Falta la variable de entorno GEMINI_API_KEY.');
