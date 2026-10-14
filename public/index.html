@@ -533,6 +533,10 @@
   </header>
 
   <div class="voice-toggle-row">
+    <label class="voice-toggle" style="margin-right:16px;">
+      <input type="checkbox" id="webSearch" checked />
+      🌐 Buscar en internet / Web search
+    </label>
     <label class="voice-toggle">
       <input type="checkbox" id="autoSpeak" />
       🔊 Leer respuestas en voz alta / Read replies aloud
@@ -876,7 +880,8 @@ async function sendMessage(userText) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         system: SYSTEM_PROMPT,
-        messages: history
+        messages: history,
+        webSearch: document.getElementById('webSearch').checked
       })
     });
     const data = await response.json();
@@ -892,7 +897,11 @@ async function sendMessage(userText) {
         : "I couldn't generate a reply this time. Could you try again?";
     }
 
-    addMessage('assistant', replyText);
+    let srcNote = null;
+    if (data && data.sources && data.sources.length) {
+      srcNote = 'Web: ' + data.sources.map(x => { try { return new URL(x.url).hostname.replace('www.',''); } catch(e){ return x.url; } }).join(' · ');
+    }
+    addMessage('assistant', replyText, srcNote);
     history.push({ role: 'assistant', content: replyText });
 
     if (autoSpeak.checked) speak(replyText, lang);
